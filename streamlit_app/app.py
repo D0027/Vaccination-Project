@@ -29,10 +29,6 @@ PALETTE = ["#2BD9A0", "#6C8FE0", "#F0B255", "#B48CE0", "#F0716F", "#4FC3D9"]
 st.markdown(f"""
 <style>
     #MainMenu, footer {{visibility: hidden;}}
-    /* keep header, but hide only the toolbar icons — NOT the sidebar reopen arrow */
-    header {{ background: transparent !important; }}
-    [data-testid="stToolbar"] {{ visibility: hidden; }}
-    [data-testid="collapsedControl"] {{ visibility: visible !important; }}
 
     .main {{ background-color: {BG}; }}
     .stApp {{ background-color: {BG}; }}
