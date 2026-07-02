@@ -28,85 +28,176 @@ PALETTE = ["#2BD9A0", "#6C8FE0", "#F0B255", "#B48CE0", "#F0716F", "#4FC3D9"]
 
 st.markdown(f"""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
     #MainMenu, footer {{visibility: hidden;}}
+    header[data-testid="stHeader"] {{ background: transparent; height: 0.5rem; }}
+
+    html, body, [class*="css"] {{ font-family: 'Inter', 'Segoe UI', sans-serif; }}
 
     .main {{ background-color: {BG}; }}
-    .stApp {{ background-color: {BG}; }}
-    .block-container {{ padding-top: 1.6rem; }}
+    .stApp {{
+        background:
+            radial-gradient(circle at 15% 0%, rgba(43,217,160,0.06) 0%, transparent 45%),
+            radial-gradient(circle at 85% 10%, rgba(108,143,224,0.07) 0%, transparent 45%),
+            {BG};
+    }}
+    .block-container {{ padding-top: 2.4rem; padding-bottom: 3rem; max-width: 1400px; }}
     body, p, span, div, label {{ color: {INK}; }}
 
+    ::-webkit-scrollbar {{ width: 10px; height: 10px; }}
+    ::-webkit-scrollbar-track {{ background: {BG}; }}
+    ::-webkit-scrollbar-thumb {{ background: {BORDER}; border-radius: 10px; }}
+    ::-webkit-scrollbar-thumb:hover {{ background: {GREEN}; }}
+
+    /* ---------- Sidebar ---------- */
     section[data-testid="stSidebar"] {{
         background: linear-gradient(180deg, #0B111C 0%, #121A2C 100%);
         border-right: 1px solid {BORDER};
     }}
     section[data-testid="stSidebar"] * {{ color: #EDF1F9 !important; }}
-    section[data-testid="stSidebar"] hr {{ border-color: rgba(255,255,255,0.12); }}
+    section[data-testid="stSidebar"] hr {{ border-color: rgba(255,255,255,0.10); margin: 14px 0; }}
     section[data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] {{
-        background-color: {GREEN} !important; color: #06231A !important;
+        background-color: {GREEN} !important; color: #06231A !important; font-weight: 600;
     }}
     section[data-testid="stSidebar"] [data-baseweb="select"] > div {{
-        background-color: {SURFACE2} !important; border-color: {BORDER} !important;
+        background-color: {SURFACE2} !important; border-color: {BORDER} !important; border-radius: 10px !important;
     }}
+    section[data-testid="stSidebar"] .stRadio > div {{ gap: 4px; }}
+    section[data-testid="stSidebar"] .stRadio label {{
+        padding: 8px 12px; border-radius: 10px; transition: background 0.15s ease;
+    }}
+    section[data-testid="stSidebar"] .stRadio label:hover {{ background: rgba(255,255,255,0.05); }}
 
+    .brand {{
+        display:flex; align-items:center; gap:10px; padding: 4px 0 2px 0;
+    }}
+    .brand-icon {{
+        width:38px; height:38px; border-radius:10px;
+        background: linear-gradient(135deg, {GREEN}, #1FA97D);
+        display:flex; align-items:center; justify-content:center; font-size:19px;
+        box-shadow: 0 4px 14px rgba(43,217,160,0.35);
+    }}
+    .brand-text h3 {{ margin:0; font-size:16px; font-weight:800; color:#FFFFFF; letter-spacing: -0.01em; }}
+    .brand-text span {{ font-size:11.5px; color:{MUTE}; }}
+
+    /* ---------- Hero ---------- */
     .hero {{
         background: linear-gradient(120deg, #0F1830 0%, #16233F 55%, #1C2C52 100%);
         border: 1px solid {BORDER};
-        border-radius: 18px;
-        padding: 28px 32px;
-        margin-bottom: 22px;
+        border-radius: 20px;
+        padding: 30px 34px;
+        margin-bottom: 26px;
         color: #EDF1F9;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }}
-    .hero h1 {{ margin: 0; font-size: 30px; font-weight: 800; color: #FFFFFF; }}
-    .hero p {{ margin: 6px 0 0 0; opacity: 0.8; font-size: 14.5px; }}
+    .hero::after {{
+        content:""; position:absolute; top:-60%; right:-10%; width:340px; height:340px; border-radius:50%;
+        background: radial-gradient(circle, rgba(43,217,160,0.22) 0%, transparent 70%);
+    }}
+    .hero h1 {{ margin: 0; font-size: 32px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.02em; }}
+    .hero p {{ margin: 8px 0 0 0; opacity: 0.78; font-size: 14.5px; max-width: 640px; }}
     .hero .tag {{
         display:inline-block; background: rgba(43,217,160,0.15); color: {GREEN};
         border: 1px solid rgba(43,217,160,0.4); border-radius: 20px;
-        padding: 3px 12px; font-size: 12px; font-weight: 600; letter-spacing: .04em;
-        margin-bottom: 10px;
+        padding: 4px 13px; font-size: 11.5px; font-weight: 700; letter-spacing: .06em;
+        margin-bottom: 12px; text-transform: uppercase;
     }}
 
+    /* ---------- KPI cards ---------- */
     .kpi-card {{
-        background: {SURFACE};
+        background: linear-gradient(160deg, {SURFACE} 0%, {SURFACE2} 100%);
         border: 1px solid {BORDER};
         border-left: 4px solid {GREEN};
-        border-radius: 12px;
-        padding: 16px 18px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
     }}
-    .kpi-value {{ font-size: 26px; font-weight: 800; color: #FFFFFF; line-height: 1.15; }}
-    .kpi-label {{ font-size: 12.5px; color: {MUTE}; margin-top: 3px; font-weight: 500; }}
+    .kpi-card:hover {{ transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.4); }}
+    .kpi-value {{ font-size: 27px; font-weight: 800; color: #FFFFFF; line-height: 1.15; letter-spacing: -0.01em; }}
+    .kpi-label {{ font-size: 12.5px; color: {MUTE}; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }}
 
-    .section-title {{ color: #FFFFFF; font-weight: 800; font-size: 21px; margin: 4px 0 2px 0; }}
-    .section-sub {{ color: {MUTE}; font-size: 13.5px; margin-bottom: 14px; }}
+    /* ---------- Section headers ---------- */
+    .section-block {{ margin-top: 6px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid {BORDER}; }}
+    .section-title {{
+        color: #FFFFFF; font-weight: 800; font-size: 22px; margin: 0 0 4px 0; letter-spacing: -0.01em;
+        display:flex; align-items:center; gap:8px;
+    }}
+    .section-title::before {{
+        content:""; width:4px; height:20px; border-radius:3px;
+        background: linear-gradient(180deg, {GREEN}, #1FA97D); display:inline-block;
+    }}
+    .section-sub {{ color: {MUTE}; font-size: 13.5px; margin: 0 0 0 12px; }}
 
     div[data-testid="stMetric"] {{
-        background: {SURFACE}; border: 1px solid {BORDER}; border-radius: 12px; padding: 10px 14px;
+        background: {SURFACE}; border: 1px solid {BORDER}; border-radius: 12px; padding: 12px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }}
-    div[data-testid="stMetricValue"] {{ color: #FFFFFF; }}
-    div[data-testid="stMetricLabel"] {{ color: {MUTE}; }}
+    div[data-testid="stMetricValue"] {{ color: #FFFFFF; font-weight: 800; }}
+    div[data-testid="stMetricLabel"] {{ color: {MUTE}; font-weight: 600; }}
 
-    .stTabs [data-baseweb="tab"] {{ font-weight: 600; color: {MUTE}; }}
+    /* ---------- Tabs ---------- */
+    .stTabs [data-baseweb="tab-list"] {{ gap: 4px; border-bottom: 1px solid {BORDER}; }}
+    .stTabs [data-baseweb="tab"] {{
+        font-weight: 600; color: {MUTE}; padding: 10px 18px; border-radius: 10px 10px 0 0;
+    }}
+    .stTabs [data-baseweb="tab"]:hover {{ color: {INK}; background: rgba(255,255,255,0.03); }}
     .stTabs [aria-selected="true"] {{ color: {GREEN} !important; }}
+    .stTabs [data-baseweb="tab-highlight"] {{ background-color: {GREEN} !important; }}
 
-    .stDataFrame, [data-testid="stDataFrame"] {{ background-color: {SURFACE}; }}
+    /* ---------- DataFrames ---------- */
+    .stDataFrame, [data-testid="stDataFrame"] {{
+        background-color: {SURFACE}; border: 1px solid {BORDER}; border-radius: 12px; overflow: hidden;
+    }}
 
-    .badge-live {{ background:rgba(43,217,160,0.15); color:{GREEN}; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid rgba(43,217,160,0.35); }}
-    .badge-demo {{ background:rgba(240,178,85,0.15); color:{AMBER}; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid rgba(240,178,85,0.35); }}
+    /* ---------- Buttons ---------- */
+    .stDownloadButton button {{
+        background: linear-gradient(135deg, {GREEN}, #1FA97D) !important;
+        color: #06231A !important; font-weight: 700 !important; border: none !important;
+        border-radius: 10px !important; box-shadow: 0 4px 12px rgba(43,217,160,0.28);
+        transition: transform 0.12s ease;
+    }}
+    .stDownloadButton button:hover {{ transform: translateY(-1px); }}
+
+    .stSelectbox [data-baseweb="select"] > div, .stMultiSelect [data-baseweb="select"] > div {{
+        background-color: {SURFACE} !important; border-color: {BORDER} !important; border-radius: 10px !important;
+    }}
+
+    .stExpander {{ background: {SURFACE}; border: 1px solid {BORDER}; border-radius: 12px; }}
+
+    .badge-live {{
+        background:rgba(43,217,160,0.15); color:{GREEN}; padding:4px 12px; border-radius:20px;
+        font-size:12px; font-weight:700; border:1px solid rgba(43,217,160,0.35); letter-spacing:.02em;
+    }}
+    .badge-demo {{
+        background:rgba(240,178,85,0.15); color:{AMBER}; padding:4px 12px; border-radius:20px;
+        font-size:12px; font-weight:700; border:1px solid rgba(240,178,85,0.35); letter-spacing:.02em;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
 PLOT_TEMPLATE = dict(
-    font=dict(family="Segoe UI, Arial", color=INK, size=13),
+    font=dict(family="Inter, Segoe UI, Arial", color=INK, size=13),
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor=SURFACE,
     margin=dict(l=10, r=10, t=48, b=10),
-    title_font=dict(size=15, color="#FFFFFF"),
+    title_font=dict(size=15.5, color="#FFFFFF"),
     legend=dict(bgcolor="rgba(0,0,0,0)"),
+    hoverlabel=dict(bgcolor=SURFACE2, bordercolor=BORDER, font_size=12.5, font_family="Inter"),
 )
 
 
-def style(fig, height=420):
-    fig.update_layout(height=height, **PLOT_TEMPLATE)
+def style(fig, height=420, title=None):
+    """Applies theme; always guarantees a non-empty title to avoid blank/'undefined' titles."""
+    layout_kwargs = dict(PLOT_TEMPLATE)
+    if title is not None:
+        layout_kwargs["title"] = title
+    elif not (fig.layout.title and fig.layout.title.text):
+        layout_kwargs["title"] = ""
+    fig.update_layout(height=height, **layout_kwargs)
     return fig
 
 
@@ -116,9 +207,29 @@ def kpi_card(col, value, label):
 
 
 def section(title, sub=""):
-    st.markdown(f'<div class="section-title">{title}</div>', unsafe_allow_html=True)
-    if sub:
-        st.markdown(f'<div class="section-sub">{sub}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="section-block"><div class="section-title">{title}</div>'
+        + (f'<div class="section-sub">{sub}</div>' if sub else "")
+        + '</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def add_country_labels(fig, df, code_col="code", name_col="name", min_show=0, max_labels=60, font_size=9):
+    """Overlays country name text on a Choropleth using Scattergeo + locationmode (no lat/lon needed)."""
+    label_df = df.copy()
+    if len(label_df) > max_labels:
+        label_df = label_df  # still show all; font kept small to reduce clutter
+    fig.add_trace(go.Scattergeo(
+        locations=label_df[code_col],
+        locationmode="ISO-3",
+        text=label_df[name_col],
+        mode="text",
+        textfont=dict(size=font_size, color="#FFFFFF", family="Inter"),
+        hoverinfo="skip",
+        showlegend=False,
+    ))
+    return fig
 
 
 # ============================================================== DATA LAYER
@@ -305,8 +416,8 @@ def load_intro_timeline():
 
 @st.cache_data(ttl=3600)
 def load_raw_table(table, limit=500):
-    allowed = {"countries", "coverage_data", "incidence_rate", "reported_cases",
-               "vaccine_introduction", "vaccine_schedule"}
+    allowed = {"countries", "coverage_data", "incidence_rate",
+               "reported_cases", "vaccine_introduction", "vaccine_schedule"}
     if table not in allowed:
         return pd.DataFrame()
     if LIVE:
@@ -315,8 +426,15 @@ def load_raw_table(table, limit=500):
 
 
 # ============================================================== SIDEBAR
-st.sidebar.markdown("### 💉 Vaccination Intelligence")
-st.sidebar.caption("Global Coverage · Incidence · Impact Analytics")
+st.sidebar.markdown("""
+<div class="brand">
+    <div class="brand-icon">💉</div>
+    <div class="brand-text">
+        <h3>Vaccination Intelligence</h3>
+        <span>Global Coverage · Incidence · Impact</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 st.sidebar.markdown(
     '<span class="badge-live">● LIVE — vaccination_db</span>' if LIVE
     else '<span class="badge-demo">◐ DEMO DATA</span>',
@@ -371,29 +489,34 @@ if page == "🏠  Overview":
         kpi_card(c5, f'{(map_df["avg_coverage"] >= 95).sum()}', "Countries \u2265 95%")
 
     st.write("")
-    section("Coverage by Country", "Hover any country to see its name and average coverage")
+    section("Coverage by Country", "Hover any country for details — names are labeled directly on the map")
     fig = px.choropleth(
         map_df, locations="code", locationmode="ISO-3", color="avg_coverage",
         hover_name="name", hover_data={"code": False, "who_region": True, "avg_coverage": ":.1f"},
         color_continuous_scale=[RED, AMBER, GREEN], range_color=(40, 100),
         labels={"avg_coverage": "Avg Coverage %", "who_region": "Region"},
     )
-    fig.update_geos(bgcolor="rgba(0,0,0,0)", showframe=False, showcountries=True, countrycolor="#E7ECF3")
-    style(fig, 480)
+    fig.update_geos(
+        bgcolor="rgba(0,0,0,0)", showframe=False, showcountries=True, countrycolor="#3A4560",
+        showcoastlines=False, showocean=True, oceancolor="#0B111C",
+        showland=True, landcolor=SURFACE2, lakecolor="#0B111C",
+    )
+    fig = add_country_labels(fig, map_df, font_size=8)
+    style(fig, 500, title="Average Coverage % by Country")
     st.plotly_chart(fig, width="stretch")
 
     col1, col2 = st.columns(2)
     with col1:
         top10 = map_df.nlargest(10, "avg_coverage").sort_values("avg_coverage")
         fig_top = px.bar(top10, x="avg_coverage", y="name", orientation="h", color_discrete_sequence=[GREEN])
-        fig_top.update_layout(title="Top 10 — Highest Coverage")
-        style(fig_top, 380)
+        fig_top.update_traces(marker_line_width=0)
+        style(fig_top, 380, title="Top 10 — Highest Coverage")
         st.plotly_chart(fig_top, width="stretch")
     with col2:
         bottom10 = map_df.nsmallest(10, "avg_coverage").sort_values("avg_coverage", ascending=False)
         fig_bot = px.bar(bottom10, x="avg_coverage", y="name", orientation="h", color_discrete_sequence=[RED])
-        fig_bot.update_layout(title="Bottom 10 — Lowest Coverage")
-        style(fig_bot, 380)
+        fig_bot.update_traces(marker_line_width=0)
+        style(fig_bot, 380, title="Bottom 10 — Lowest Coverage")
         st.plotly_chart(fig_bot, width="stretch")
 
 elif page == "📈  Coverage vs Incidence":
@@ -410,7 +533,7 @@ elif page == "📈  Coverage vs Incidence":
         fig.add_vline(x=df["avg_coverage_pct"].median(), line_dash="dot", line_color=MUTE)
         fig.add_hline(y=df["avg_incidence_rate"].median(), line_dash="dot", line_color=MUTE)
         fig.update_layout(legend_title="WHO Region", xaxis_title="Avg Coverage %", yaxis_title="Avg Incidence Rate")
-        style(fig, 540)
+        style(fig, 540, title="Coverage % vs Incidence Rate by Country")
         st.plotly_chart(fig, width="stretch")
         st.caption("Dotted lines mark the median split. Top-left quadrant = low coverage & high incidence — highest priority.")
     with tab2:
@@ -436,14 +559,12 @@ elif page == "🔎  Country Explorer":
         fig1 = px.bar(ant, x="avg_coverage", y="antigen", orientation="h",
                        color="avg_coverage", color_continuous_scale=[RED, AMBER, GREEN],
                        hover_data=["antigen_description"])
-        fig1.update_layout(title=f"Coverage by Antigen — {country}", yaxis={"categoryorder": "total ascending"},
-                            coloraxis_showscale=False)
-        style(fig1, 430)
+        fig1.update_layout(yaxis={"categoryorder": "total ascending"}, coloraxis_showscale=False)
+        style(fig1, 430, title=f"Coverage by Antigen — {country}")
         st.plotly_chart(fig1, width="stretch")
     with col2:
         fig2 = px.area(yr, x="year", y="avg_coverage", color_discrete_sequence=[GREEN])
-        fig2.update_layout(title=f"Coverage Trend — {country}")
-        style(fig2, 430)
+        style(fig2, 430, title=f"Coverage Trend — {country}")
         st.plotly_chart(fig2, width="stretch")
 
     with st.expander("View raw antigen data"):
@@ -467,8 +588,8 @@ elif page == "⚠️  Risk & Gaps":
         counts.columns = ["who_region", "count"]
         fig = px.bar(counts.sort_values("count"), x="count", y="who_region", orientation="h",
                      color_discrete_sequence=[AMBER])
-        fig.update_layout(title="At-Risk Records by Region")
-        style(fig, 420)
+        fig.update_traces(marker_line_width=0)
+        style(fig, 420, title="At-Risk Records by Region")
         st.plotly_chart(fig, width="stretch")
 
 elif page == "🦠  Disease Trends":
@@ -484,14 +605,13 @@ elif page == "🦠  Disease Trends":
     col1, col2 = st.columns([1.4, 1])
     with col1:
         fig1 = px.area(filtered, x="year", y="avg_cases", color="disease", color_discrete_sequence=PALETTE)
-        fig1.update_layout(title="Average Cases by Year and Disease")
-        style(fig1, 460)
+        style(fig1, 460, title="Average Cases by Year and Disease")
         st.plotly_chart(fig1, width="stretch")
     with col2:
         r = region_inc.sort_values("avg_incidence_rate")
         fig2 = px.bar(r, x="avg_incidence_rate", y="who_region", orientation="h", color_discrete_sequence=[GREEN])
-        fig2.update_layout(title="Avg Incidence by WHO Region")
-        style(fig2, 460)
+        fig2.update_traces(marker_line_width=0)
+        style(fig2, 460, title="Avg Incidence by WHO Region")
         st.plotly_chart(fig2, width="stretch")
 
 elif page == "🎯  2030 Measles Target":
@@ -506,14 +626,17 @@ elif page == "🎯  2030 Measles Target":
     with c1:
         fig_gauge = go.Figure(go.Indicator(
             mode="gauge+number", value=latest_cov,
-            number={"suffix": "%", "font": {"color": NAVY, "size": 40}},
+            number={"suffix": "%", "font": {"color": "#FFFFFF", "size": 40}},
             gauge={
-                "axis": {"range": [0, 100]},
+                "axis": {"range": [0, 100], "tickcolor": MUTE},
                 "bar": {"color": GREEN},
+                "bgcolor": SURFACE2,
+                "borderwidth": 1,
+                "bordercolor": BORDER,
                 "steps": [
-                    {"range": [0, 60], "color": "#FBE4E4"},
-                    {"range": [60, 85], "color": "#FDF1DD"},
-                    {"range": [85, 100], "color": "#E4F7EF"},
+                    {"range": [0, 60], "color": "rgba(240,113,111,0.18)"},
+                    {"range": [60, 85], "color": "rgba(240,178,85,0.18)"},
+                    {"range": [85, 100], "color": "rgba(43,217,160,0.18)"},
                 ],
                 "threshold": {"line": {"color": RED, "width": 3}, "value": 95},
             },
@@ -521,23 +644,21 @@ elif page == "🎯  2030 Measles Target":
         fig_gauge.update_layout(
             title="Latest Measles Coverage vs 95% Target", height=300,
             font=PLOT_TEMPLATE["font"], paper_bgcolor=PLOT_TEMPLATE["paper_bgcolor"],
-            margin=PLOT_TEMPLATE["margin"],
+            margin=PLOT_TEMPLATE["margin"], title_font=PLOT_TEMPLATE["title_font"],
         )
         st.plotly_chart(fig_gauge, width="stretch")
-        st.markdown(f"""<div class="kpi-card" style="text-align:center;">
+        st.markdown(f"""<div class="kpi-card" style="text-align:center; border-left-color:{AMBER};">
             <div class="kpi-value" style="font-size:34px;">{gap:.2f} pts</div>
             <div class="kpi-label">remaining to reach the 95% target</div></div>""", unsafe_allow_html=True)
 
     with c2:
         fig0 = px.area(trend, x="year", y="measles_coverage_pct", color_discrete_sequence=[GREEN])
         fig0.add_hline(y=95, line_dash="dot", line_color=RED, annotation_text="95% target")
-        fig0.update_layout(title="Measles Coverage Over Time")
-        style(fig0, 280)
+        style(fig0, 280, title="Measles Coverage Over Time")
         st.plotly_chart(fig0, width="stretch")
 
         fig1 = px.area(intro, x="year", y="vaccines_introduced", color="who_region", color_discrete_sequence=PALETTE)
-        fig1.update_layout(title="Vaccine Introductions by Region")
-        style(fig1, 280)
+        style(fig1, 280, title="Vaccine Introductions by Region")
         st.plotly_chart(fig1, width="stretch")
 
 elif page == "🗂️  Raw Data Explorer":
