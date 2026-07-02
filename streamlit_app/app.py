@@ -29,13 +29,16 @@ PALETTE = ["#2BD9A0", "#6C8FE0", "#F0B255", "#B48CE0", "#F0716F", "#4FC3D9"]
 st.markdown(f"""
 <style>
     #MainMenu, footer {{visibility: hidden;}}
-    header[data-testid="stHeader"] {{ background: transparent; }}
-    div[data-testid="stToolbar"] {{ visibility: hidden; }}
-    div[data-testid="stDecoration"] {{ visibility: hidden; }}
-    [data-testid="collapsedControl"] {{
-        visibility: visible !important;
-        display: block !important;
+
+    /* ---- FIX: hide the built-in Streamlit header toolbar so page titles
+       never render underneath it (this was the "heading cut off" bug) ---- */
+    header[data-testid="stHeader"] {{
+        background: transparent;
+        height: 0rem;
+        visibility: hidden;
     }}
+    div[data-testid="stToolbar"] {{ visibility: hidden; height: 0; }}
+    div[data-testid="stDecoration"] {{ visibility: hidden; height: 0; }}
 
     .main {{ background-color: {BG}; }}
     .stApp {{ background-color: {BG}; }}
