@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+.streamlit/secrets.toml
+data/raw/*.csv
+data/cleaned/*.csv
+.ipynb_checkpoints/
+.DS_Store
