@@ -29,26 +29,14 @@ PALETTE = ["#2BD9A0", "#6C8FE0", "#F0B255", "#B48CE0", "#F0716F", "#4FC3D9"]
 st.markdown(f"""
 <style>
     #MainMenu, footer {{visibility: hidden;}}
-
-    /* ---- FIX: keep header but transparent + slim, so sidebar
-       collapse/expand arrow still renders and works ---- */
-    header[data-testid="stHeader"] {{
-        background: transparent;
-        height: 3rem;
-    }}
-    div[data-testid="stToolbar"] {{ visibility: hidden; height: 0; }}
-    div[data-testid="stDecoration"] {{ visibility: hidden; height: 0; }}
-
-    /* Force the sidebar toggle button to stay visible & clickable */
-    button[data-testid="stSidebarCollapseButton"],
-    div[data-testid="collapsedControl"] {{
-        visibility: visible !important;
-        display: flex !important;
-    }}
+    /* keep header, but hide only the toolbar icons — NOT the sidebar reopen arrow */
+    header {{ background: transparent !important; }}
+    [data-testid="stToolbar"] {{ visibility: hidden; }}
+    [data-testid="collapsedControl"] {{ visibility: visible !important; }}
 
     .main {{ background-color: {BG}; }}
     .stApp {{ background-color: {BG}; }}
-    .block-container {{ padding-top: 2.2rem !important; }}
+    .block-container {{ padding-top: 1.6rem; }}
     body, p, span, div, label {{ color: {INK}; }}
 
     section[data-testid="stSidebar"] {{
@@ -72,7 +60,7 @@ st.markdown(f"""
         margin-bottom: 22px;
         color: #EDF1F9;
     }}
-    .hero h1 {{ margin: 0; font-size: 30px; font-weight: 800; color: #FFFFFF; line-height: 1.3; }}
+    .hero h1 {{ margin: 0; font-size: 30px; font-weight: 800; color: #FFFFFF; }}
     .hero p {{ margin: 6px 0 0 0; opacity: 0.8; font-size: 14.5px; }}
     .hero .tag {{
         display:inline-block; background: rgba(43,217,160,0.15); color: {GREEN};
@@ -92,7 +80,7 @@ st.markdown(f"""
     .kpi-value {{ font-size: 26px; font-weight: 800; color: #FFFFFF; line-height: 1.15; }}
     .kpi-label {{ font-size: 12.5px; color: {MUTE}; margin-top: 3px; font-weight: 500; }}
 
-    .section-title {{ color: #FFFFFF; font-weight: 800; font-size: 21px; margin: 10px 0 2px 0; line-height: 1.4; }}
+    .section-title {{ color: #FFFFFF; font-weight: 800; font-size: 21px; margin: 4px 0 2px 0; }}
     .section-sub {{ color: {MUTE}; font-size: 13.5px; margin-bottom: 14px; }}
 
     div[data-testid="stMetric"] {{
@@ -106,35 +94,8 @@ st.markdown(f"""
 
     .stDataFrame, [data-testid="stDataFrame"] {{ background-color: {SURFACE}; }}
 
-    .badge-live {{
-        background:rgba(43,217,160,0.15); color:{GREEN}; padding:3px 10px; border-radius:20px;
-        font-size:12px; font-weight:700; border:1px solid rgba(43,217,160,0.35);
-    }}
+    .badge-live {{ background:rgba(43,217,160,0.15); color:{GREEN}; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid rgba(43,217,160,0.35); }}
     .badge-demo {{ background:rgba(240,178,85,0.15); color:{AMBER}; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid rgba(240,178,85,0.35); }}
-
-    /* ---- pulsing live dot used on Risk & Gaps ---- */
-    .pulse-dot {{
-        display:inline-block; width:9px; height:9px; border-radius:50%;
-        background:{GREEN}; margin-right:6px; box-shadow: 0 0 0 rgba(43,217,160,0.6);
-        animation: pulse 1.6s infinite;
-    }}
-    @keyframes pulse {{
-        0% {{ box-shadow: 0 0 0 0 rgba(43,217,160,0.55); }}
-        70% {{ box-shadow: 0 0 0 9px rgba(43,217,160,0); }}
-        100% {{ box-shadow: 0 0 0 0 rgba(43,217,160,0); }}
-    }}
-    .live-strip {{
-        display:flex; align-items:center; gap:8px; background:{SURFACE}; border:1px solid {BORDER};
-        border-radius: 10px; padding: 7px 14px; font-size: 12.5px; color:{MUTE}; width: fit-content; margin-bottom: 14px;
-    }}
-
-    .progress-track {{
-        background: {SURFACE2}; border-radius: 20px; height: 12px; width: 100%; overflow: hidden; border: 1px solid {BORDER};
-    }}
-    .progress-fill {{
-        height: 100%; border-radius: 20px;
-        background: linear-gradient(90deg, {AMBER}, {GREEN});
-    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -440,13 +401,7 @@ if page == "🏠  Overview":
         st.plotly_chart(fig_bot, width="stretch")
 
 elif page == "📈  Coverage vs Incidence":
-    st.markdown(f"""
-    <div class="hero">
-        <div class="tag">PRIORITY INTERVENTION MAP</div>
-        <h1>Coverage vs Incidence</h1>
-        <p>Where coverage is low and disease incidence is high — priority zone for intervention.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    section("Coverage vs Incidence", "Where coverage is low and disease incidence is high — priority zone for intervention")
 
     df = load_scatter(selected_regions)
     tab1, tab2 = st.tabs(["Scatter View", "Data Table"])
@@ -499,73 +454,26 @@ elif page == "🔎  Country Explorer":
         st.dataframe(ant, width="stretch")
 
 elif page == "⚠️  Risk & Gaps":
-    st.markdown(f"""
-    <div class="hero">
-        <div class="tag">⚠ RISK INTELLIGENCE</div>
-        <h1>Risk & Gaps Radar</h1>
-        <p>Vaccines scheduled with only a single dose round across {len(all_regions)} WHO regions — potential reinforcement candidates.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(
-        f"""<div class="live-strip"><span class="pulse-dot"></span>
-        {"LIVE feed — vaccination_db" if LIVE else "DEMO mode — connect MySQL for live risk data"}</div>""",
-        unsafe_allow_html=True,
-    )
+    section("Risk & Gaps", "Vaccines scheduled with only a single dose round — potential reinforcement candidates")
 
     risk = load_risk(selected_regions)
+    m1, m2, m3 = st.columns(3)
+    m1.metric("At-Risk Records", f"{len(risk):,}")
+    m2.metric("Countries Affected", risk["country_name"].nunique())
+    m3.metric("Vaccine Types Involved", risk["vaccine_description"].nunique())
 
-    total_records = len(risk)
-    countries_affected = risk["country_name"].nunique() if not risk.empty else 0
-    vaccine_types = risk["vaccine_description"].nunique() if not risk.empty else 0
-    top_region = risk["who_region"].value_counts().idxmax() if not risk.empty else "—"
-    # composite risk score: density of gaps per affected country, capped 0-100
-    risk_score = int(min(100, (total_records / max(countries_affected, 1)) * 12))
-
-    c1, c2, c3, c4, c5 = st.columns(5)
-    kpi_card(c1, f"{total_records:,}", "At-Risk Records")
-    kpi_card(c2, f"{countries_affected}", "Countries Affected")
-    kpi_card(c3, f"{vaccine_types}", "Vaccine Types Involved")
-    kpi_card(c4, top_region, "Highest-Risk Region")
-    kpi_card(c5, f"{risk_score}/100", "Composite Risk Score")
-
-    st.write("")
-
-    if risk.empty:
-        st.info("No risk records for the selected filters.")
-    else:
-        col1, col2 = st.columns([1.4, 1])
-        with col1:
-            section("Risk Matrix", "Countries ranked by number of single-dose vaccine gaps")
-            matrix = risk.groupby(["country_name", "who_region"]).size().reset_index(name="gap_count")
-            matrix = matrix.sort_values("gap_count", ascending=False).head(20)
-            figm = px.bar(matrix.sort_values("gap_count"), x="gap_count", y="country_name",
-                          color="who_region", orientation="h", color_discrete_sequence=PALETTE)
-            figm.update_layout(title="Top 20 Countries by Risk Gaps", yaxis_title="", xaxis_title="Gap Count")
-            style(figm, 480)
-            st.plotly_chart(figm, width="stretch")
-        with col2:
-            section("Risk Composition", "Share of gaps by vaccine type")
-            vc = risk["vaccine_description"].value_counts().reset_index()
-            vc.columns = ["vaccine_description", "count"]
-            figp = px.pie(vc.head(8), names="vaccine_description", values="count", hole=0.55,
-                          color_discrete_sequence=PALETTE)
-            figp.update_traces(textposition="inside", textinfo="percent")
-            figp.update_layout(title="Top Vaccine Types at Risk")
-            style(figp, 480)
-            st.plotly_chart(figp, width="stretch")
-
-        section("Regional Risk Treemap", "Region → vaccine type → gap count, sized and colored by volume")
-        tm = risk.groupby(["who_region", "vaccine_description"]).size().reset_index(name="count")
-        figt = px.treemap(tm, path=["who_region", "vaccine_description"], values="count",
-                          color="count", color_continuous_scale=[GREEN, AMBER, RED])
-        figt.update_layout(title=None)
-        style(figt, 440)
-        st.plotly_chart(figt, width="stretch")
-
-        with st.expander("🔍 Full Risk Table"):
-            st.dataframe(risk, width="stretch", height=420)
-            st.download_button("⬇ Download as CSV", risk.to_csv(index=False), "risk_and_gaps.csv", "text/csv")
+    col1, col2 = st.columns([1.3, 1])
+    with col1:
+        st.dataframe(risk, width="stretch", height=420)
+        st.download_button("⬇ Download as CSV", risk.to_csv(index=False), "risk_and_gaps.csv", "text/csv")
+    with col2:
+        counts = risk["who_region"].value_counts().reset_index()
+        counts.columns = ["who_region", "count"]
+        fig = px.bar(counts.sort_values("count"), x="count", y="who_region", orientation="h",
+                     color_discrete_sequence=[AMBER])
+        fig.update_layout(title="At-Risk Records by Region")
+        style(fig, 420)
+        st.plotly_chart(fig, width="stretch")
 
 elif page == "🦠  Disease Trends":
     section("Disease Trends", "Historical case counts and regional incidence")
@@ -591,82 +499,49 @@ elif page == "🦠  Disease Trends":
         st.plotly_chart(fig2, width="stretch")
 
 elif page == "🎯  2030 Measles Target":
-    st.markdown(f"""
-    <div class="hero">
-        <div class="tag">🎯 WHO 2030 TARGET TRACKER</div>
-        <h1>Measles Elimination Countdown</h1>
-        <p>Tracking global progress toward the WHO 95%-by-2030 measles coverage target.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    section("Vaccine Introduction & Measles 2030", "Progress toward the WHO 95%-by-2030 measles coverage target")
 
     trend = load_measles_target()
     intro = load_intro_timeline()
-    latest_cov = float(trend["measles_coverage_pct"].iloc[-1])
-    gap = float(trend["gap_to_95pct_target"].iloc[-1])
-    latest_year = int(trend["year"].iloc[-1])
-    years_left = max(0, 2030 - latest_year)
+    latest_cov = trend["measles_coverage_pct"].iloc[-1]
+    gap = trend["gap_to_95pct_target"].iloc[-1]
 
-    # simple linear projection using the most recent points on record
-    recent = trend.tail(5)
-    slope = np.polyfit(recent["year"], recent["measles_coverage_pct"], 1)[0] if len(recent) >= 2 else 0.0
-    projected_2030 = float(np.clip(latest_cov + slope * (2030 - latest_year), 0, 100))
-    progress_pct = int(min(100, (latest_cov / 95) * 100))
-
-    c1, c2, c3, c4 = st.columns(4)
-    kpi_card(c1, f"{latest_cov:.1f}%", f"Coverage ({latest_year})")
-    kpi_card(c2, f"{gap:.2f} pts", "Gap to 95% Target")
-    kpi_card(c3, f"{years_left}", "Years Remaining")
-    kpi_card(c4, f"{projected_2030:.1f}%", "Projected 2030 Coverage")
-
-    st.write("")
     c1, c2 = st.columns([1, 2.2])
     with c1:
         fig_gauge = go.Figure(go.Indicator(
-            mode="gauge+number+delta", value=latest_cov,
-            delta={"reference": 95, "increasing": {"color": GREEN}, "decreasing": {"color": RED}},
-            number={"suffix": "%", "font": {"color": "#FFFFFF", "size": 40}},
+            mode="gauge+number", value=latest_cov,
+            number={"suffix": "%", "font": {"color": NAVY, "size": 40}},
             gauge={
-                "axis": {"range": [0, 100], "tickcolor": MUTE},
+                "axis": {"range": [0, 100]},
                 "bar": {"color": GREEN},
-                "bgcolor": SURFACE,
                 "steps": [
-                    {"range": [0, 60], "color": "rgba(240,113,111,0.25)"},
-                    {"range": [60, 85], "color": "rgba(240,178,85,0.25)"},
-                    {"range": [85, 100], "color": "rgba(43,217,160,0.25)"},
+                    {"range": [0, 60], "color": "#FBE4E4"},
+                    {"range": [60, 85], "color": "#FDF1DD"},
+                    {"range": [85, 100], "color": "#E4F7EF"},
                 ],
                 "threshold": {"line": {"color": RED, "width": 3}, "value": 95},
             },
         ))
         fig_gauge.update_layout(
-            title="Latest Measles Coverage vs 95% Target", height=320,
+            title="Latest Measles Coverage vs 95% Target", height=300,
             font=PLOT_TEMPLATE["font"], paper_bgcolor=PLOT_TEMPLATE["paper_bgcolor"],
             margin=PLOT_TEMPLATE["margin"],
         )
         st.plotly_chart(fig_gauge, width="stretch")
-
-        st.markdown(f"""
-        <div class="kpi-card">
-            <div class="kpi-label" style="margin-bottom:8px;">Progress toward 95% target</div>
-            <div class="progress-track"><div class="progress-fill" style="width:{progress_pct}%;"></div></div>
-            <div class="kpi-label" style="margin-top:8px;text-align:right;">{progress_pct}%</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="kpi-card" style="text-align:center;">
+            <div class="kpi-value" style="font-size:34px;">{gap:.2f} pts</div>
+            <div class="kpi-label">remaining to reach the 95% target</div></div>""", unsafe_allow_html=True)
 
     with c2:
         fig0 = px.area(trend, x="year", y="measles_coverage_pct", color_discrete_sequence=[GREEN])
         fig0.add_hline(y=95, line_dash="dot", line_color=RED, annotation_text="95% target")
-        fig0.add_trace(go.Scatter(
-            x=[latest_year, 2030], y=[latest_cov, projected_2030],
-            mode="lines+markers", line=dict(color=AMBER, dash="dash"),
-            marker=dict(size=8), name="Projected trajectory",
-        ))
-        fig0.update_layout(title="Measles Coverage Over Time + 2030 Projection")
-        style(fig0, 300)
+        fig0.update_layout(title="Measles Coverage Over Time")
+        style(fig0, 280)
         st.plotly_chart(fig0, width="stretch")
 
         fig1 = px.area(intro, x="year", y="vaccines_introduced", color="who_region", color_discrete_sequence=PALETTE)
         fig1.update_layout(title="Vaccine Introductions by Region")
-        style(fig1, 260)
+        style(fig1, 280)
         st.plotly_chart(fig1, width="stretch")
 
 elif page == "🗂️  Raw Data Explorer":
