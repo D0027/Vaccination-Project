@@ -30,15 +30,21 @@ st.markdown(f"""
 <style>
     #MainMenu, footer {{visibility: hidden;}}
 
-    /* ---- FIX: hide the built-in Streamlit header toolbar so page titles
-       never render underneath it (this was the "heading cut off" bug) ---- */
+    /* ---- FIX: keep header but transparent + slim, so sidebar
+       collapse/expand arrow still renders and works ---- */
     header[data-testid="stHeader"] {{
         background: transparent;
-        height: 0rem;
-        visibility: hidden;
+        height: 3rem;
     }}
     div[data-testid="stToolbar"] {{ visibility: hidden; height: 0; }}
     div[data-testid="stDecoration"] {{ visibility: hidden; height: 0; }}
+
+    /* Force the sidebar toggle button to stay visible & clickable */
+    button[data-testid="stSidebarCollapseButton"],
+    div[data-testid="collapsedControl"] {{
+        visibility: visible !important;
+        display: flex !important;
+    }}
 
     .main {{ background-color: {BG}; }}
     .stApp {{ background-color: {BG}; }}
